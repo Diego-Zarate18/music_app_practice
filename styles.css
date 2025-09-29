@@ -15,7 +15,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
 }
 
 .player-area {
@@ -127,7 +127,7 @@ body {
 .song-item {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 12px;
     cursor: pointer;
     transition: background-color 0.2s;
     border-radius: 8px;
