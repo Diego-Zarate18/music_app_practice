@@ -71,7 +71,7 @@ body {
     background: #7c7c7c;
     border-radius: 4px;
     cursor: pointer;
-    margin: 30px 0 20px 0;
+    margin: 30px 0 5px 0;
 }
 
 #progress::-webkit-slider-thumb {
@@ -81,6 +81,15 @@ body {
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.time-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #b0b0b0;
+    margin-bottom: 30px;
+    padding: 0 5px;
 }
 
 .controls {
@@ -181,6 +190,11 @@ body {
     .music-player {
         width: 100%;
         padding: 20px 15px;
+    }
+
+    .time-display {
+        font-size: 12px;
+        margin-bottom: 15px; 
     }
     
     .playlist {
