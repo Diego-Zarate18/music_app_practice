@@ -1,101 +1,53 @@
-import createPlaylist from "./utils/playlist.js";
+let progress = document.getElementById("progress");
+let song = document.getElementById("song");
+let ctrlIcon = document.getElementById("ctrlIcon");
+let currentTimeDisplay = document.getElementById("current-time");
+let durationTimeDisplay = document.getElementById("duration-time");
 
-let progress_bar = document.getElementById("progress");
-let media = document.getElementById("media");
-let play_btn = document.getElementById("play");
-const song_img = document.getElementById("song-img");
-const lastest = document.getElementById("lastest");
-const forward = document.getElementById("forward")
-
-const songs = [
-        {
-            song_name : "cancion CHIDA",
-            artist_name: "artista 1",
-            song_url: "./media/song.mp3",
-            caratula: "https://picsum.photos/200"
-        },
-        {
-            song_name : "cancion CHIDA 2",
-            artist_name: "artista 1",
-            song_url: "./media/song_2.mp3",
-            caratula: "https://picsum.photos/200"
-        },
-        {
-            song_name : "cancion CHIDA 3",
-            artist_name: "artista 3",
-            song_url: "./media/song_3.mp3",
-            caratula: "https://picsum.photos/200"
-        },
-    ];
-
-const last = [];
-
-const playlist = createPlaylist(songs.length);
-
-let playingNow;
-
-window.addEventListener('DOMContentLoaded', () => {
-    playingNow = playlist.pop()
-    loadSong(playingNow);
-})
-
-function loadSong(i){
-    const title = document.getElementById("title");
-    const artist = document.getElementById("artist");
-
-    const now = songs[i];
-
-    media.src = now.song_url;
-    title.innerText = now.song_name;
-    artist.innerText = now.artist_name;
-    song_img.src = now.caratula;
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${remainingSeconds}`;
 }
 
-media.addEventListener('loadedmetadata', () => {
-    progress_bar.max = 100;
-    progress_bar.value = 0;
-    if(play_btn.classList.contains("pause")){
-        media.play();
-    }
-});
-
-media.ontimeupdate = function updateProgressBar() {
-    const progress_value = (this.currentTime / this.duration) * 100;
-    progress_bar.value = progress_value;
+song.onloadedmetadata = function() {
+    progress.max = song.duration;
+    progress.value = song.currentTime;
+    durationTimeDisplay.textContent = formatTime(song.duration);
 }
 
-lastest.addEventListener('click', function(){
-    if(!last.length == 0){
-        playlist.push(playingNow);
-        playingNow = last.pop();
-        loadSong(playingNow)
+song.ontimeupdate = function() {
+    if (!progress.dragging) {
+        progress.value = song.currentTime;
+        currentTimeDisplay.textContent = formatTime(song.currentTime);
     }
-});
-forward.addEventListener('click', function(){
-    if(!playlist.length == 0){
-        last.push(playingNow);
-        playingNow = playlist.pop();
-        loadSong(playingNow)
-    }
-});
-
-progress_bar.oninput = function() {
-    media.currentTime = (this.value/100) * media.duration;
 }
 
-play_btn.addEventListener("click", playPause);
+song.onended = function() {
+    ctrlIcon.classList.remove("fa-pause");
+    ctrlIcon.classList.add("fa-play");
+    progress.value = 0;
+    currentTimeDisplay.textContent = '0:00';
+}
 
 function playPause(){
-    if(play_btn.classList.contains("pause")){
-        media.pause();
-        play_btn.classList.remove("pause");
-        play_btn.classList.add("play");
-        play_btn.innerText = "Play"
-    }else{
-        media.play();
-        play_btn.classList.remove("play");
-        play_btn.classList.add("pause");
-        play_btn.innerText = "Pause";
+    if(ctrlIcon.classList.contains("fa-pause")){
+        song.pause();
+        ctrlIcon.classList.remove("fa-pause");
+        ctrlIcon.classList.add("fa-play");
+    } else {
+        song.play();
+        ctrlIcon.classList.add("fa-pause");
+        ctrlIcon.classList.remove("fa-play");
     }
 }
 
+progress.oninput = function(){
+    progress.dragging = true;
+    currentTimeDisplay.textContent = formatTime(progress.value);
+}
+
+progress.onchange = function(){
+    song.currentTime = progress.value;
+    progress.dragging = false;
+}
