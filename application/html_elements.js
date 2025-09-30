@@ -1,7 +1,5 @@
-export const elements = {
-    progress: document.getElementById("progress"),
-    song: document.getElementById("song"),
-    ctrlIcon: document.getElementById("ctrlIcon"),
-    currentTimeDisplay: document.getElementById("current-time"),
-    durationTimeDisplay: document.getElementById("duration-time"),
-};
+let progress = document.getElementById("progress");
+let song = document.getElementById("song");
+let ctrlIcon = document.getElementById("ctrlIcon");
+let currentTimeDisplay = document.getElementById("current-time");
+let durationTimeDisplay = document.getElementById("duration-time");

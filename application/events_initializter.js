@@ -1,17 +1,29 @@
-import { elements } from './html_elements.js';
-import { MusicPlayer } from './player.js';
+song.onloadedmetadata = function() {
+    progress.max = song.duration;
+    progress.value = song.currentTime;
+    durationTimeDisplay.textContent = formatTime(song.duration);
+}
 
-export function initializeEvents() {
-    const player = new MusicPlayer(elements);
+song.ontimeupdate = function() {
+    if (!progress.dragging) {
+        progress.value = song.currentTime;
+        currentTimeDisplay.textContent = formatTime(song.currentTime);
+    }
+}
 
-    const { song, progress, ctrlIcon } = elements;
+song.onended = function() {
+    ctrlIcon.classList.remove("fa-pause");
+    ctrlIcon.classList.add("fa-play");
+    progress.value = 0;
+    currentTimeDisplay.textContent = '0:00';
+}
 
-    song.onloadedmetadata = () => player.initializeMetadata();
-    song.ontimeupdate = () => player.updateTime();
-    song.onended = () => player.handleSongEnd();
+progress.oninput = function(){
+    progress.dragging = true;
+    currentTimeDisplay.textContent = formatTime(progress.value);
+}
 
-    ctrlIcon.parentElement.onclick = () => player.togglePlayPause();
-
-    progress.oninput = () => player.startDragging();
-    progress.onchange = () => player.seekToNewTime();
+progress.onchange = function(){
+    song.currentTime = progress.value;
+    progress.dragging = false;
 }
